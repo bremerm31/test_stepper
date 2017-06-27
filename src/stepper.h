@@ -1,6 +1,7 @@
-#include <vector>
+#ifndef STEPPER_H
+#define STEPPER_H
 
-#include <stepper/initialize.cpp>
+#include <vector>
 
 //typedef hpx::serialization::serialize_buffer<double> hpx_serialize_buffer;
 
@@ -14,3 +15,4 @@ class stepper{
 
 
 }
+#endif
