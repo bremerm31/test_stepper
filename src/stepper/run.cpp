@@ -1,7 +1,7 @@
 #include "../stepper.h"
 
 
-void Stepper::initialize(std::size_t steps){
+hpx::future<void> Stepper::initialize(std::size_t steps){
 
   //hpx::future<void> step_future = make_ready_future();
 

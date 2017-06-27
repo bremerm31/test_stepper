@@ -35,8 +35,8 @@ public:
 
 private:
 
-  std::size_t id;
-  std::uint64_t t;
+  std::size_t _id;
+  std::uint64_t _t;
 
   std::vector<double> _my_vector;
 
