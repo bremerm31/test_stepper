@@ -48,10 +48,3 @@ hpx::future<void> partition::perform_one_time_step(int t){
 
   return when_all(left_boundary_future, right_boundary_future, interior_future);
 }
-
-void hpx_main(){
-}
-
-int main(){
-
-}
