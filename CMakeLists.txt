@@ -62,6 +62,7 @@ list(APPEND ARC_SRC
 add_executable(
     test_stepper
     src/main.cpp
+    src/stepper/run.cpp
     ${ARC_SRC}
 )
 

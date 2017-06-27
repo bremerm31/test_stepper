@@ -12,9 +12,10 @@
 
 int hpx_main(int argc, char **argv) {
 
+  std::size_t timesteps=2;
 
-
-
+  Stepper myStepper;
+  myStepper.run(timesteps);
 
   return hpx::finalize();
 }

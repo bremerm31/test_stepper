@@ -12,8 +12,8 @@ class Partition {
 public:
 
   Partition() = default;
-  Partition(std::size_t id, std::size_t grain_size=10)
-    : _id(id), _t(0), _my_vector(grain_size) {}
+  Partition(std::size_t id)
+      : _id(id), _t(0), _my_value(id) {}
 
   void perform_one_timestep() {
 
@@ -24,23 +24,25 @@ public:
   void send() {
 
     hpx::cout << "Doing send on " << _id << " @ " << _t << "\n";
-    
+
+
   }
 
 
   void receive() {
 
     hpx::cout << "Doing receive on " << _id << " @ " << _t << "\n";
-    
+
   }
 
+  hpx::lcos::local::channel<double> incoming;
 
 private:
 
   std::size_t _id;
   std::uint64_t _t;
 
-  std::vector<double> _my_vector;
+  double _my_value;
 
 };
 
