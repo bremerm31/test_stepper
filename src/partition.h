@@ -8,8 +8,8 @@
 
 #include <vector>
 
-class Partition {
-public:
+struct Partition : hpx::components::simple_component_base<Partition>
+{
 
   Partition() = default;
   Partition(std::size_t id)
@@ -35,9 +35,11 @@ public:
 
   }
 
-  hpx::lcos::local::channel<double> incoming;
+  HPX_DEFINE_COMPONENT_ACTION(Partition, perform_one_timestep, perf_action);
+  HPX_DEFINE_COMPONENT_ACTION(Partition, send, send_action);
+  HPX_DEFINE_COMPONENT_ACTION(Partition, receive, receive_action);
 
-private:
+  //  hpx::lcos::local::channel<double> incoming;
 
   std::size_t _id;
   std::uint64_t _t;
@@ -45,5 +47,9 @@ private:
   double _my_value;
 
 };
+
+HPX_REGISTER_ACTION_DECLARATION(Partition::perf_action, partition_perf_action);
+HPX_REGISTER_ACTION_DECLARATION(Partition::send_action, partition_send_action);
+HPX_REGISTER_ACTION_DECLARATION(Partition::receive_action, partition_receive_action);
 
 #endif
