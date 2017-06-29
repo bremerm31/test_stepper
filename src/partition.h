@@ -10,12 +10,12 @@
 #include <vector>
 
 
-struct Partition : hpx::components::simple_component_base<Partition>
+struct Partition : public hpx::components::simple_component_base<Partition>
 {
 
   Partition() = default;
   Partition(std::size_t id, std::size_t n_ids)
-    : _id(id), _t(0), _my_value(id)
+    : _id(id), _t(0), n_ids(n_ids), _my_value(id)
   {
     std::string const in_channel_string = "channel"+std::to_string(id);
     hpx::future<void> set_up_in = incoming.register_as(in_channel_string);
@@ -30,34 +30,45 @@ struct Partition : hpx::components::simple_component_base<Partition>
 
   void perform_one_timestep() {
 
-    hpx::cout << "Performing one timestep on " << _id << " @ " << _t++ << "\n";
+    hpx::cout << "Performing one timestep on " << _id << " @ " << _t << "\n";
 
   }
 
   void send() {
 
     hpx::cout << "Doing send on " << _id << " @ " << _t << "\n";
+    outgoing.set(static_cast<double>(_id), _t );
 
+  }
+
+
+  hpx::future<void> receive() {
+
+    hpx::future<double> f = incoming.get(_t);
+
+
+    return f.then([this](hpx::future<double> f) {
+	hpx::cout << "Received " << f.get() << " from " 
+		  << ( this->_id - 1 + this->n_ids ) % this->n_ids
+		  <<"\n";
+      });
 
   }
 
-
-  void receive() {
-
-    hpx::cout << "Doing receive on " << _id << " @ " << _t << "\n";
-
-  }
+  void update()
+  { ++_t; };
 
   HPX_DEFINE_COMPONENT_ACTION(Partition, perform_one_timestep, perf_action);
   HPX_DEFINE_COMPONENT_ACTION(Partition, send, send_action);
   HPX_DEFINE_COMPONENT_ACTION(Partition, receive, receive_action);
+  HPX_DEFINE_COMPONENT_ACTION(Partition, update, update_action);
 
   hpx::lcos::channel<double> incoming;
   hpx::lcos::channel<double> outgoing;
 
   std::size_t _id;
   std::uint64_t _t;
-
+  std::uint64_t n_ids;
   double _my_value;
   //  double* _my_value;
 
@@ -68,5 +79,5 @@ HPX_REGISTER_CHANNEL_DECLARATION(double);
 HPX_REGISTER_ACTION_DECLARATION(Partition::perf_action, partition_perf_action);
 HPX_REGISTER_ACTION_DECLARATION(Partition::send_action, partition_send_action);
 HPX_REGISTER_ACTION_DECLARATION(Partition::receive_action, partition_receive_action);
-
+HPX_REGISTER_ACTION_DECLARATION(Partition::update_action, partition_update_action);
 #endif
