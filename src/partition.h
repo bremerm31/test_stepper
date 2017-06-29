@@ -14,10 +14,18 @@ struct Partition : hpx::components::simple_component_base<Partition>
 {
 
   Partition() = default;
-  Partition(std::size_t id)
-      : _id(id), _t(0), _my_value(id), buffer(hpx::find_here()) {
-    std::string const channel_string = "channel"+std::to_string(id);
-    //buffer.register_as(channel_string);
+  Partition(std::size_t id, std::size_t n_ids)
+    : _id(id), _t(0), _my_value(id)
+  {
+    std::string const in_channel_string = "channel"+std::to_string(id);
+    hpx::future<void> set_up_in = incoming.register_as(in_channel_string);
+
+    //connect to the guy on the left
+    std::string const out_channel_string = "channel"+std::to_string( ( id + 1 ) % n_ids);
+    outgoing.connect_to(out_channel_string);
+
+
+    set_up_in.get();
   }
 
   void perform_one_timestep() {
@@ -40,13 +48,12 @@ struct Partition : hpx::components::simple_component_base<Partition>
 
   }
 
-  hpx::lcos::channel<double> buffer;
-
   HPX_DEFINE_COMPONENT_ACTION(Partition, perform_one_timestep, perf_action);
   HPX_DEFINE_COMPONENT_ACTION(Partition, send, send_action);
   HPX_DEFINE_COMPONENT_ACTION(Partition, receive, receive_action);
 
-  //  hpx::lcos::local::channel<double> incoming;
+  hpx::lcos::channel<double> incoming;
+  hpx::lcos::channel<double> outgoing;
 
   std::size_t _id;
   std::uint64_t _t;
