@@ -14,7 +14,12 @@ struct PartitionClient : hpx::components::client_base<PartitionClient, Partition
 
   hpx::future<void> perform_one_timestep() {
     Partition::perf_action act;
-    return hpx::async(act, get_id() );
+
+    hpx::cout << "in partition client\n";
+    hpx::future<void> f =  hpx::async(hpx::launch::sync, act, get_id() );
+    f.get();
+
+    return hpx::make_ready_future();
   }
 
 };

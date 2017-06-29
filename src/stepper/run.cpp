@@ -14,6 +14,7 @@ hpx::future<void> Stepper::run(std::size_t steps){
 
 
   for(std::size_t t=0; t!=steps; ++t){
+    hpx::cout << "timestep: " << t << "\n";
     for ( uint pid = 0; pid < my_partitions.size(); ++pid ) {
       auto& curr_part = my_partitions[pid];
 

@@ -44,7 +44,6 @@ struct Partition : public hpx::components::simple_component_base<Partition>
 
   }
 
-
   void receive( double msg ) {
 
     hpx::cout << "Received msg: " << msg << " @ " << _t << "\n";
