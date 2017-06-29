@@ -36,8 +36,10 @@ struct Partition : hpx::components::simple_component_base<Partition>
 
   void send() {
 
-    hpx::cout << "Doing send on " << _id << " @ " << _t << "\n";
+    double message = _id;
+    outgoing.set(message, _t);
 
+    hpx::cout << "Doing send on " << _id << " @ " << _t << "\n";
 
   }
 
@@ -46,6 +48,8 @@ struct Partition : hpx::components::simple_component_base<Partition>
 
     hpx::cout << "Doing receive on " << _id << " @ " << _t << "\n";
 
+    hpx::future<double> incoming_message = incoming.get(_t);
+    hpx::cout << "incoming_message.get() = " << incoming_message.get() << std::endl;
   }
 
   HPX_DEFINE_COMPONENT_ACTION(Partition, perform_one_timestep, perf_action);

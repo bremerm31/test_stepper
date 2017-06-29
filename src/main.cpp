@@ -17,10 +17,6 @@ int hpx_main(int argc, char **argv) {
   Stepper myStepper;
   hpx::future<void> f = myStepper.run(timesteps);
 
-  hpx::lcos::channel<double> buffer(hpx::find_here());
-  std::string const channel_string = "channel!";
-  buffer.register_as(channel_string);
-
   f.get();
 
   return hpx::finalize();
@@ -28,5 +24,9 @@ int hpx_main(int argc, char **argv) {
 
 int main(int argc, char **argv){
 
-  return hpx::init(argc,argv);
+  std::vector<std::string> config;
+  config.push_back("hpx.run_hpx_main!=1");
+
+  return hpx::init(argc,argv,config);
+
 }
