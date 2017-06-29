@@ -17,20 +17,4 @@ struct PartitionClient : hpx::components::client_base<PartitionClient, Partition
     return hpx::async(act, get_id() );
   }
 
-  hpx::future<void> send() {
-    Partition::send_action act;
-    return hpx::async(act, get_id() );
-  }
-
-  hpx::future<void> receive() {
-    Partition::receive_action act;
-    return hpx::async(act, get_id() );
-  }
-
-  hpx::future<void> update() {
-    Partition::update_action act;
-    return hpx::async(act, get_id() );
-  }
-
-
 };

@@ -64,6 +64,7 @@ add_executable(
     src/main.cpp
     src/partition.cpp
     src/stepper/run.cpp
+    src/stepper/perform_one_timestep.cpp
     ${ARC_SRC}
 )
 

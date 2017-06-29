@@ -28,7 +28,10 @@ struct Partition : public hpx::components::simple_component_base<Partition>
     set_up_in.get();
   }
 
-  void perform_one_timestep() {
+  hpx::future<void> perform_one_timestep();
+
+
+  void work() {
 
     hpx::cout << "Performing one timestep on " << _id << " @ " << _t << "\n";
 
@@ -37,31 +40,20 @@ struct Partition : public hpx::components::simple_component_base<Partition>
   void send() {
 
     hpx::cout << "Doing send on " << _id << " @ " << _t << "\n";
-    outgoing.set(static_cast<double>(_id), _t );
+    //    outgoing.set(static_cast<double>(_id), _t );
 
   }
 
 
-  hpx::future<void> receive() {
+  void receive( double msg ) {
 
-    hpx::future<double> f = incoming.get(_t);
-
-
-    return f.then([this](hpx::future<double> f) {
-	hpx::cout << "Received " << f.get() << " from " 
-		  << ( this->_id - 1 + this->n_ids ) % this->n_ids
-		  <<"\n";
-      });
-
+    hpx::cout << "Received msg: " << msg << " @ " << _t << "\n";
   }
 
   void update()
   { ++_t; };
 
   HPX_DEFINE_COMPONENT_ACTION(Partition, perform_one_timestep, perf_action);
-  HPX_DEFINE_COMPONENT_ACTION(Partition, send, send_action);
-  HPX_DEFINE_COMPONENT_ACTION(Partition, receive, receive_action);
-  HPX_DEFINE_COMPONENT_ACTION(Partition, update, update_action);
 
   hpx::lcos::channel<double> incoming;
   hpx::lcos::channel<double> outgoing;
@@ -77,7 +69,4 @@ struct Partition : public hpx::components::simple_component_base<Partition>
 HPX_REGISTER_CHANNEL_DECLARATION(double);
 
 HPX_REGISTER_ACTION_DECLARATION(Partition::perf_action, partition_perf_action);
-HPX_REGISTER_ACTION_DECLARATION(Partition::send_action, partition_send_action);
-HPX_REGISTER_ACTION_DECLARATION(Partition::receive_action, partition_receive_action);
-HPX_REGISTER_ACTION_DECLARATION(Partition::update_action, partition_update_action);
 #endif

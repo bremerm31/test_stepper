@@ -20,19 +20,7 @@ hpx::future<void> Stepper::run(std::size_t steps){
       step_futures[pid] = step_futures[pid].then(
 		            [&curr_part](hpx::future<void>&&)
 			    {
-
-			      hpx::future<void> msg_sent = curr_part.send();
-
-			      hpx::future<void> compute_done = curr_part.perform_one_timestep();
-
-			      hpx::future<void> msg_recvd = curr_part.receive();
-
-
-			      return hpx::when_all(msg_sent, compute_done, msg_recvd).then(
-						     [&curr_part](auto&& f){
-						       f.get();
-						       return curr_part.update();
-						     });
+			      return curr_part.perform_one_timestep();
 			    });
     }
   }

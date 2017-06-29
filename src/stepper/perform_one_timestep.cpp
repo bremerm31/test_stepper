@@ -1,18 +1,20 @@
-hpx::future<void> partition::perform_one_time_step(int t){
+#include "../partition.h"
 
-  // Call get on the channel (left_from and right_from)
-  // which produces a future
-  hpx::future<void> left_boundary_future = channel_left_from.get(t);
-  hpx::future<void> right_boundary_future = channel_right_from.get(t);
+hpx::future<void> Partition::perform_one_timestep()
+{
 
-  // How do I get current state?
+  hpx::future<void> send_future = outgoing.set(hpx::launch::async, _t);
 
+  hpx::future<void> work_future = hpx::async( &(this->work()) );
 
-  // question: if it's an hpx::future<void>, why does it return a std::vector<double>?
+  hpx::future<void> receive_future = incoming.get(_t).then(
+				      [this](hpx::future<double> f)
+				        this->receive( f.get() );
+				      );
 
-  // Call .get on the incoming futures
-  std::vector<double> data = channel_left_from.get();
-  std::vector<double> data = channel_right_from.get();
-
-  return when_all(left_boundary_future, right_boundary_future, interior_future);
+  //hpx::future< std::tuple<hpx::future<void>, hpx::future<void>, hpx::future<void> > >
+  return hpx::when_all( send_future, work_future, receive_future ).then(
+		       [this](auto f) {
+			 this->update();
+		        });
 }
