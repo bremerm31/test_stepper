@@ -1,3 +1,0 @@
-/work/00004/michoski/test_stepper/build/CMakeFiles/rebuild_cache.dir
-/work/00004/michoski/test_stepper/build/CMakeFiles/edit_cache.dir
-/work/00004/michoski/test_stepper/build/CMakeFiles/test_stepper.dir
