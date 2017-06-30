@@ -1,6 +1,5 @@
 #include "../stepper.h"
 
-
 hpx::future<void> Stepper::run(std::size_t steps){
 
   //hpx::future<void> step_future = make_ready_future();

@@ -1,7 +1,6 @@
 #ifndef PARTITION_H
 #define PARTITION_H
 
-
 //#include <iostream>
 #include <hpx/hpx_main.hpp>
 #include <hpx/include/iostreams.hpp>
@@ -9,13 +8,12 @@
 
 #include <vector>
 
-
 struct Partition : public hpx::components::simple_component_base<Partition>
 {
 
   Partition() = default;
   Partition(std::size_t id, std::size_t n_ids)
-    : _id(id), _t(0), n_ids(n_ids), _my_value(id)
+    : _id(id), _t(0), n_ids(n_ids), _my_value(id), incoming(hpx::find_here())
   {
     std::string const in_channel_string = "channel"+std::to_string(id);
     hpx::future<void> set_up_in = incoming.register_as(in_channel_string);
