@@ -16,41 +16,11 @@ struct Partition : public hpx::components::simple_component_base<Partition>
   Partition() = default;
   Partition(std::size_t id, std::size_t n_ids)
     : _id(id), _t(0), n_ids(n_ids), _my_value(id)
-  {
-    std::string const in_channel_string = "channel"+std::to_string(id);
-    hpx::future<void> set_up_in = incoming.register_as(in_channel_string);
+  {}
 
-    //connect to the guy on the left
-    std::string const out_channel_string = "channel"+std::to_string( ( id + 1 ) % n_ids);
-    outgoing.connect_to(out_channel_string);
-
-
-    set_up_in.get();
+  void perform_one_timestep() {
+    hpx::cout << "perform\n";
   }
-
-  hpx::future<void> perform_one_timestep();
-
-
-  void work() {
-
-    hpx::cout << "Performing one timestep on " << _id << " @ " << _t << "\n";
-
-  }
-
-  void send() {
-
-    hpx::cout << "Doing send on " << _id << " @ " << _t << "\n";
-    //    outgoing.set(static_cast<double>(_id), _t );
-
-  }
-
-  void receive( double msg ) {
-
-    hpx::cout << "Received msg: " << msg << " @ " << _t << "\n";
-  }
-
-  void update()
-  { ++_t; };
 
   HPX_DEFINE_COMPONENT_ACTION(Partition, perform_one_timestep, perf_action);
 
