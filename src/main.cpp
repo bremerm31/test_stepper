@@ -13,15 +13,18 @@
 // Partition
 struct Partition : public hpx::components::simple_component_base<Partition>
 {
+  Partition() : _var(1000) {}
+  Partition(uint var) : _var(var) {}
+
   hpx::future<void> perform_one_timestep()
   { return hpx::async( &Partition::print_var, this );  }
 
   HPX_DEFINE_COMPONENT_ACTION(Partition, perform_one_timestep, perf_action);                    
 
   void print_var()
-  { hpx::cout << var << "\n"; }
+  { hpx::cout << _var << "\n"; }
 
-  double var = 5;
+  double _var;
 };
 
 HPX_REGISTER_CHANNEL_DECLARATION(double);                                                       
@@ -37,6 +40,10 @@ struct PartitionClient : hpx::components::client_base<PartitionClient, Partition
 
   PartitionClient(hpx::future<hpx::id_type>&& id)
     : base_type(std::move(id))
+  {}
+
+  PartitionClient(hpx::id_type id, uint var)
+    : base_type(hpx::new_<Partition>(id, var))
   {}
 
   hpx::future<void> perform_one_timestep() {
@@ -63,7 +70,7 @@ public:
     //distribute round robin          
     for (uint id=my_locality_number; id < partitions; id += num_localities ) {
 
-      PartitionClient c = hpx::new_<PartitionClient>(here);
+      PartitionClient c(here, id);
 
       my_partitions.push_back( c );
     }
