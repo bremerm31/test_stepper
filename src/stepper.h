@@ -13,7 +13,7 @@
 
 class Stepper{
  public:
-  Stepper(std::size_t partitions=10){
+  Stepper(std::size_t partitions){
 
     hpx::naming::id_type here = hpx::find_here();
     uint my_locality_number = hpx::get_locality_id();
@@ -27,10 +27,10 @@ class Stepper{
 
     //distribute round robin for now
     for (uint id=my_locality_number; id < partitions; id += num_localities ){
-      file << "Making submesh " << id << " on Locality " << my_locality_number 
+      hpx::cout << "Making submesh " << id << " on Locality " << my_locality_number 
 		<< "\n";
 
-      PartitionClient c = hpx::new_<PartitionClient>(here, id, partitions);
+      PartitionClient c(here, id, partitions);
       my_partitions.push_back( c );
     }
 

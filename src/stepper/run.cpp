@@ -1,6 +1,5 @@
 #include "../stepper.h"
 
-
 hpx::future<void> Stepper::run(std::size_t steps){
 
   //hpx::future<void> step_future = make_ready_future();
@@ -14,14 +13,15 @@ hpx::future<void> Stepper::run(std::size_t steps){
 
 
   for(std::size_t t=0; t!=steps; ++t){
+    hpx::cout << "timestep: " << t << "\n";
     for ( uint pid = 0; pid < my_partitions.size(); ++pid ) {
       auto& curr_part = my_partitions[pid];
 
       step_futures[pid] = step_futures[pid].then(
-				     [&curr_part](hpx::future<void>&&)
-				     {
-				       return curr_part.perform_one_timestep();
-				     });
+		            [&curr_part](hpx::future<void>&&)
+			    {
+			      return curr_part.perform_one_timestep();
+			    });
     }
   }
 
