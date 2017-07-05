@@ -14,7 +14,7 @@ int hpx_main(int argc, char **argv) {
 
   std::size_t timesteps=2;
 
-  Stepper myStepper;
+  Stepper myStepper(10);
   hpx::future<void> f = myStepper.run(timesteps);
 
   f.get();

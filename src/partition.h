@@ -10,20 +10,21 @@
 
 struct Partition : public hpx::components::simple_component_base<Partition>
 {
-
-  Partition() = default;
+  Partition() : _id(1000) {}
   Partition(std::size_t id, std::size_t n_ids)
     : _id(id), _t(0), n_ids(n_ids), _my_value(id), incoming(hpx::find_here())
   {
+    hpx::cout << " In Partition ctor " << id << " of " << n_ids << "\n";
+
     std::string const in_channel_string = "channel"+std::to_string(id);
-    hpx::future<void> set_up_in = incoming.register_as(in_channel_string);
+    //hpx::future<void> set_up_in = incoming.register_as(in_channel_string);
 
     //connect to the guy on the left
     std::string const out_channel_string = "channel"+std::to_string( ( id + 1 ) % n_ids);
-    outgoing.connect_to(out_channel_string);
+    //outgoing.connect_to(out_channel_string);
 
 
-    set_up_in.get();
+    //set_up_in.get();
   }
 
   hpx::future<void> perform_one_timestep();
