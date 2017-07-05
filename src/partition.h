@@ -39,7 +39,7 @@ struct Partition : public hpx::components::simple_component_base<Partition>
   void send() {
 
     hpx::cout << "Doing send on " << _id << " @ " << _t << "\n";
-    //    outgoing.set(static_cast<double>(_id), _t );
+    outgoing.set(static_cast<double>(_id), _t);
   }
 
   void receive( double msg ) {
