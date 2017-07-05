@@ -14,7 +14,10 @@
 struct Partition : public hpx::components::simple_component_base<Partition>
 {
   Partition() : _var(1000) {}
-  Partition(uint var) : _var(var) {}
+  Partition(uint var) : _var(var)
+  {
+    hpx::cout << "In Partition ctor\n";
+  }
 
   hpx::future<void> perform_one_timestep()
   { return hpx::async( &Partition::print_var, this );  }
@@ -38,12 +41,12 @@ struct PartitionClient : hpx::components::client_base<PartitionClient, Partition
 
   using base_type = hpx::components::client_base<PartitionClient, Partition>;
 
-  PartitionClient(hpx::future<hpx::id_type>&& id)
-    : base_type(std::move(id))
-  {}
+  //  PartitionClient(hpx::future<hpx::id_type>&& id)
+  //  : base_type(std::move(id))
+  //{}
 
-  PartitionClient(hpx::id_type id, uint var)
-    : base_type(hpx::new_<Partition>(id, var))
+  PartitionClient(hpx::id_type where, uint var)
+    : base_type(hpx::new_<Partition>(where, var))
   {}
 
   hpx::future<void> perform_one_timestep() {
