@@ -17,10 +17,7 @@ struct PartitionClient : hpx::components::client_base<PartitionClient, Partition
     Partition::perf_action act;
 
     hpx::cout << "in partition client\n";
-    hpx::future<void> f =  hpx::async(hpx::launch::sync, act, get_id() );
-    f.get();
-
-    return hpx::make_ready_future();
+    return hpx::async(act, get_id() );
   }
 
 };

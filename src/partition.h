@@ -17,11 +17,11 @@ struct Partition : public hpx::components::simple_component_base<Partition>
     hpx::cout << " In Partition ctor " << id << " of " << n_ids << "\n";
 
     std::string const in_channel_string = "channel"+std::to_string(id);
-    //hpx::future<void> set_up_in = incoming.register_as(in_channel_string);
+    hpx::future<void> set_up_in = incoming.register_as(in_channel_string);
 
     //connect to the guy on the left
     std::string const out_channel_string = "channel"+std::to_string( ( id + 1 ) % n_ids);
-    //outgoing.connect_to(out_channel_string);
+    outgoing.connect_to(out_channel_string);
 
 
     //set_up_in.get();
@@ -45,7 +45,7 @@ struct Partition : public hpx::components::simple_component_base<Partition>
 
   void receive( double msg ) {
 
-    hpx::cout << "Received msg: " << msg << " @ " << _t << "\n";
+    hpx::cout << "Received msg: " << msg << " on " << _id << " @ " << _t << "\n";
   }
 
   void update()
