@@ -22,11 +22,11 @@ hpx::future<void> Partition::perform_one_timestep()
 
   std::vector<hpx::future<void> > receive_futures;
   for ( uint indx = 0; indx < 2; ++indx ) {
-    hpx::future<void> receive_future = incoming[indx].get(_t).then(
-							     [this](hpx::future<double> f) {
-							       this->receive( f.get() );
-							     }
-							     );
+    receive_futures.push_back( incoming[indx].get(_t).then(
+							   [this](hpx::future<double> f) {
+							     this->receive( f.get() );
+							   }
+							   ));
   }
 
   //hpx::future< std::tuple<hpx::future<void>, hpx::future<void>, hpx::future<void> > >
